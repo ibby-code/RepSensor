@@ -5,7 +5,7 @@ import {THREE, Renderer} from 'expo-three'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import {Asset} from 'expo-asset'
 
-global.THREE = global.THREE || THREE;
+//global.THREE = global.THREE || THREE;
 
 // Create an Asset from a local resource
 //const [{ localUri }] = await Asset.loadAsync(require('./dumbell.obj'))
@@ -14,7 +14,7 @@ export default function App() {
    return (
     <GLView
       style={{ flex: 1 }}
-      onContextCreate={(gl) => {
+      onContextCreate={(gl: ExpoWebGLRenderingContext) => {
         // Create a WebGLRenderer without a DOM element
         const { drawingBufferWidth: width, drawingBufferHeight: height } = gl;
         const renderer = new Renderer({
@@ -87,7 +87,7 @@ export default function App() {
         let step = 0
         let speed = 0.01
 
-        function animate(time) {
+        function animate(time: DOMHighResTimeStamp) {
           box.rotation.x = time / 1000;
           box.rotation.y = time / 1000;
 

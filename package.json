@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^22.5.1",
+    "@types/react-dom": "^18.3.0",
     "expo": "~51.0.31",
     "expo-gl": "~14.0.2",
     "expo-status-bar": "~1.12.1",
@@ -21,7 +24,11 @@
     "three": "^0.166.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@types/react": "^18.3.4",
+    "@types/three": "^0.167.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
   },
   "private": true
 }
