@@ -1,10 +1,13 @@
 import { ExerciseType, Workout, WorkoutData } from './WorkoutTypes';
 
 const FAKE_MONDAY: Workout = {
+    id: 'w1',
     name: 'Monday blues',
     exercises: [
         {
+            id: '1',
             type: ExerciseType.BICEP_CURL,
+            weight: 20,
             sets: [
                 {
                     data: { "file": "RisusSemperPorta.avi" },
@@ -30,7 +33,9 @@ const FAKE_MONDAY: Workout = {
             ]
         },
         {
-            type: ExerciseType.TRICEP_EXSTENSION,
+            id: '2',
+            weight: 20,
+            type: ExerciseType.TRICEP_EXTENSION,
             sets: [
                 {
                     data: { "file": "EuMassaDonec.jpeg" },
@@ -52,11 +57,14 @@ const FAKE_MONDAY: Workout = {
     ],
 }
 
-const FAKE_WEDNESDAY = {
+const FAKE_WEDNESDAY: Workout= {
+    id: 'w2',
     name: 'Wednesday humpday',
     exercises: [
         {
-            type: ExerciseType.TRICEP_EXSTENSION,
+            id: '3',
+            weight: 25,
+            type: ExerciseType.TRICEP_EXTENSION,
             sets: [
                 {
                     data: { "file": "Sapien.ppt" },
@@ -77,6 +85,8 @@ const FAKE_WEDNESDAY = {
             ]
         },
         {
+            id: '4',
+            weight: 30,
             type: ExerciseType.BICEP_CURL,
             sets: [
                 {
@@ -106,6 +116,8 @@ const FAKE_WEDNESDAY = {
             ]
         },
         {
+            id: "5",
+            weight: 20,
             type: ExerciseType.BICEP_CURL,
             sets: [
                 {
@@ -130,9 +142,12 @@ const FAKE_WEDNESDAY = {
 }
 
 const FAKE_FRIDAY: Workout = {
+    id: 'w3',
     name: 'Lazy friday',
     exercises: [
         {
+            id: '6',
+            weight: 35,
             type: ExerciseType.BICEP_CURL,
             sets: [
                 {
