@@ -85,7 +85,7 @@ export function getExerciseDisplay(exercise: Exercise): { title: string, subtitl
     const exerciseDisplay = EXERCISE_TYPE_MAP.get(exercise.type)?.displayText || 'Exercise';
     if (exercise.sets.length) {
         const avgWeight = exercise.sets.reduce((sum, s) => sum + s.weight, 0) / exercise.sets.length;
-        const title = `${exerciseDisplay}- ${exercise.sets.length} sets, avg ${avgWeight}${avgWeight > 1 ? 'lbs' : 'lb'}`;
+        const title = `${exerciseDisplay} - ${exercise.sets.length} sets, avg ${avgWeight}${avgWeight > 1 ? 'lbs' : 'lb'}`;
         const {start, end} = getExerciseRange(exercise);
         const subtitle = `From ${start.format('LT')} to ${end.format('LT')}`;
         return {title, subtitle}

@@ -1,14 +1,20 @@
-import { createTamagui, TamaguiProvider } from 'tamagui';
+import { TamaguiProvider } from 'tamagui';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {tamaguiConfig} from './tamagui.config'
-import {useFonts, Inter_500Medium, Inter_700Bold} from '@expo-google-fonts/inter'
+import { tamaguiConfig } from './tamagui.config'
+import { useFonts, Inter_500Medium, Inter_700Bold } from '@expo-google-fonts/inter'
 
+import { RootNavigatorStack } from 'src/RouteConfig';
 import Home from 'src/screens/Home/Home';
-
-const Stack = createNativeStackNavigator();
+import Workout from 'src/screens/Workout/Workout';
 
 export default function App() {
+  const headerOptions = {
+    title: 'Rep sensor',
+    headerStyle: {
+      backgroundColor: '#000000'
+    },
+    headerTintColor: '#fff',
+  };
   const [loaded] = useFonts({
     Inter: Inter_500Medium,
     InterBold: Inter_700Bold,
@@ -17,19 +23,19 @@ export default function App() {
   return (
     <TamaguiProvider config={tamaguiConfig}>
       <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
+        <RootNavigatorStack.Navigator initialRouteName="Home">
+          <RootNavigatorStack.Screen
             name="Home"
             component={Home}
-            options={{
-              title: 'Rep sensor',
-              headerStyle: {
-                backgroundColor: '#000000'
-              },
-              headerTintColor: '#fff',
-            }}
+            options={headerOptions}
           />
-        </Stack.Navigator>
+          <RootNavigatorStack.Screen
+            name="Workout"
+            component={Workout}
+            options={headerOptions}
+            initialParams={{ workoutId: '' }}
+          />
+        </RootNavigatorStack.Navigator>
       </NavigationContainer>
     </TamaguiProvider>
   );

@@ -7,10 +7,10 @@ const FAKE_MONDAY: Workout = {
         {
             id: '1',
             type: ExerciseType.BICEP_CURL,
-            weight: 20,
             sets: [
                 {
                     data: { "file": "RisusSemperPorta.avi" },
+                    weight: 20,
                     predictedReps: 3,
                     actualReps: 2,
                     startTimeMs: 1699317169,
@@ -18,6 +18,7 @@ const FAKE_MONDAY: Workout = {
                 },
                 {
                     data: { "file": "QuisqueUt.mp3" },
+                    weight: 20,
                     predictedReps: 8,
                     actualReps: 1,
                     startTimeMs: 1721734719,
@@ -25,6 +26,7 @@ const FAKE_MONDAY: Workout = {
                 },
                 {
                     data: { "file": "VulputateNonummyMaecenas.xls" },
+                    weight: 20,
                     predictedReps: 15,
                     actualReps: 1,
                     startTimeMs: 1723618362,
@@ -34,11 +36,11 @@ const FAKE_MONDAY: Workout = {
         },
         {
             id: '2',
-            weight: 20,
             type: ExerciseType.TRICEP_EXTENSION,
             sets: [
                 {
                     data: { "file": "EuMassaDonec.jpeg" },
+                    weight: 20,
                     predictedReps: 6,
                     actualReps: 18,
                     startTimeMs: 1696733497,
@@ -47,6 +49,7 @@ const FAKE_MONDAY: Workout = {
                 },
                 {
                     data: { "file": "MagnisDis.jpeg" },
+                    weight: 20,
                     predictedReps: 15,
                     actualReps: 11,
                     startTimeMs: 1705035916,
@@ -57,18 +60,18 @@ const FAKE_MONDAY: Workout = {
     ],
 }
 
-const FAKE_WEDNESDAY: Workout= {
+const FAKE_WEDNESDAY: Workout = {
     id: 'w2',
     name: 'Wednesday humpday',
     exercises: [
         {
             id: '3',
-            weight: 25,
             type: ExerciseType.TRICEP_EXTENSION,
             sets: [
                 {
                     data: { "file": "Sapien.ppt" },
                     predictedReps: 2,
+                    weight: 25,
                     actualReps: 1,
                     startTimeMs: 1714321893,
                     endTimeMs: 1714321921,
@@ -79,6 +82,7 @@ const FAKE_WEDNESDAY: Workout= {
                     predictedReps: 11,
                     actualReps: 1,
                     startTimeMs: 1720544681,
+                    weight: 20,
                     endTimeMs: 1720544690,
 
                 }
@@ -86,7 +90,6 @@ const FAKE_WEDNESDAY: Workout= {
         },
         {
             id: '4',
-            weight: 30,
             type: ExerciseType.BICEP_CURL,
             sets: [
                 {
@@ -95,12 +98,14 @@ const FAKE_WEDNESDAY: Workout= {
                     actualReps: 12,
                     startTimeMs: 1697733884,
                     endTimeMs: 1697733919,
+                    weight: 30,
 
                 },
                 {
                     data: { "file": "In.mp3" },
                     predictedReps: 17,
                     actualReps: 11,
+                    weight: 30,
                     startTimeMs: 1705885989,
                     endTimeMs: 1705886008,
 
@@ -110,6 +115,7 @@ const FAKE_WEDNESDAY: Workout= {
                     predictedReps: 16,
                     actualReps: 2,
                     startTimeMs: 1704266781,
+                    weight: 30,
                     endTimeMs: 1704266807,
                 }
 
@@ -117,7 +123,6 @@ const FAKE_WEDNESDAY: Workout= {
         },
         {
             id: "5",
-            weight: 20,
             type: ExerciseType.BICEP_CURL,
             sets: [
                 {
@@ -125,6 +130,7 @@ const FAKE_WEDNESDAY: Workout= {
                     predictedReps: 12,
                     actualReps: 9,
                     startTimeMs: 1693650724,
+                    weight: 20,
                     endTimeMs: 1693650760,
 
                 },
@@ -133,6 +139,7 @@ const FAKE_WEDNESDAY: Workout= {
                     predictedReps: 5,
                     actualReps: 1,
                     startTimeMs: 1724688206,
+                    weight: 30,
                     endTimeMs: 1724688222,
 
                 }
@@ -147,7 +154,6 @@ const FAKE_FRIDAY: Workout = {
     exercises: [
         {
             id: '6',
-            weight: 35,
             type: ExerciseType.BICEP_CURL,
             sets: [
                 {
@@ -155,6 +161,7 @@ const FAKE_FRIDAY: Workout = {
                     predictedReps: 12,
                     actualReps: 8,
                     startTimeMs: 1697266149,
+                    weight: 35,
                     endTimeMs: 1697266185,
 
                 },
@@ -164,6 +171,7 @@ const FAKE_FRIDAY: Workout = {
                     actualReps: 6,
                     startTimeMs: 1707047223,
                     endTimeMs: 1707047267,
+                    weight: 35,
 
                 },
                 {
@@ -172,10 +180,12 @@ const FAKE_FRIDAY: Workout = {
                     actualReps: 8,
                     startTimeMs: 1707774442,
                     endTimeMs: 1707774465,
+                    weight: 35,
                 },
                 {
                     data: { "file": "InFelisDonec.xls" },
                     predictedReps: 17,
+                    weight: 20,
                     actualReps: 3,
                     startTimeMs: 1715408580,
                     endTimeMs: 1715408611,
@@ -183,6 +193,7 @@ const FAKE_FRIDAY: Workout = {
                 {
                     data: { "file": "HendreritAtVulputate.avi" },
                     predictedReps: 19,
+                    weight: 20,
                     actualReps: 2,
                     startTimeMs: 1706646691,
                     endTimeMs: 1706646735,
