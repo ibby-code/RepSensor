@@ -1,11 +1,13 @@
 import { TamaguiProvider } from 'tamagui';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { tamaguiConfig } from './tamagui.config'
 import { useFonts, Inter_500Medium, Inter_700Bold } from '@expo-google-fonts/inter'
+import { useColorScheme } from 'react-native';
 
 import { RootNavigatorStack } from 'src/RouteConfig';
 import Home from 'src/screens/Home/Home';
 import Workout from 'src/screens/Workout/Workout';
+import Exercise from 'src/screens/Exercise/Exercise';
 
 export default function App() {
   const headerOptions = {
@@ -22,21 +24,28 @@ export default function App() {
   if (!loaded) return null
   return (
     <TamaguiProvider config={tamaguiConfig}>
-      <NavigationContainer>
-        <RootNavigatorStack.Navigator initialRouteName="Home">
-          <RootNavigatorStack.Screen
-            name="Home"
-            component={Home}
-            options={headerOptions}
-          />
-          <RootNavigatorStack.Screen
-            name="Workout"
-            component={Workout}
-            options={headerOptions}
-            initialParams={{ workoutId: '' }}
-          />
-        </RootNavigatorStack.Navigator>
-      </NavigationContainer>
+      <ThemeProvider value={DefaultTheme}>
+        <NavigationContainer>
+          <RootNavigatorStack.Navigator initialRouteName="Home">
+            <RootNavigatorStack.Screen
+              name="Home"
+              component={Home}
+              options={headerOptions}
+            />
+            <RootNavigatorStack.Screen
+              name="Workout"
+              component={Workout}
+              options={headerOptions}
+              initialParams={{ workoutId: '' }}
+            />
+            <RootNavigatorStack.Screen
+              name="Exercise"
+              component={Exercise}
+              options={headerOptions}
+            />
+          </RootNavigatorStack.Navigator>
+        </NavigationContainer>
+      </ThemeProvider>
     </TamaguiProvider>
   );
 }

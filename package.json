@@ -15,12 +15,17 @@
     "@tamagui/babel-plugin": "^1.109.8",
     "@tamagui/config": "^1.109.8",
     "@tamagui/font-inter": "^1.109.8",
+    "@tamagui/linear-gradient": "^1.109.8",
+    "@tamagui/lucide-icons": "^1.109.8",
+    "@tamagui/metro-plugin": "^1.109.8",
+    "@tamagui/themes": "^1.109.8",
     "@types/jest": "^29.5.12",
     "@types/node": "^22.5.1",
     "@types/react-dom": "^18.3.0",
     "expo": "~51.0.31",
     "expo-font": "~12.0.9",
     "expo-gl": "~14.0.2",
+    "expo-linear-gradient": "~13.0.2",
     "expo-status-bar": "~1.12.1",
     "expo-three": "^8.0.0",
     "moment": "^2.30.1",
@@ -31,8 +36,7 @@
     "react-native-screens": "3.31.1",
     "react-native-web": "~0.19.10",
     "tamagui": "^1.109.8",
-    "three": "^0.166.0",
-    "undefined": "types/moment"
+    "three": "^0.166.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

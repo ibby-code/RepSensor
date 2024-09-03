@@ -17,8 +17,8 @@ export type RepSet = {
 
 /** Types of exercises. */
 export enum ExerciseType {
-    BICEP_CURL,
-    TRICEP_EXTENSION,
+    BICEP_CURL = 'bicep_curl',
+    TRICEP_EXTENSION = 'tricep_extenstion',
 }
 
 type ExerciseTypeData = {
@@ -26,7 +26,8 @@ type ExerciseTypeData = {
     icon: string
 }
 
-const EXERCISE_TYPE_MAP: Map<ExerciseType, ExerciseTypeData> = new Map([
+/** Map with display values for each exercise type. */
+export const EXERCISE_TYPE_MAP: Map<ExerciseType, ExerciseTypeData> = new Map([
     [ExerciseType.BICEP_CURL, { displayText: 'Bicep Curl', icon: '' }],
     [ExerciseType.TRICEP_EXTENSION, { displayText: 'Tricep Extension', icon: '' }],
 ]);

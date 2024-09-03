@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import {StyleSheet, View, Pressable, Text, FlatList} from 'react-native';
-import { ListItem, Separator, XStack, YGroup } from 'tamagui'
+import { Button, ListItem, Separator, YStack, YGroup } from 'tamagui'
 
 import { getWorkoutEndTime } from 'src/WorkoutTypes';
 
@@ -9,6 +9,11 @@ import { FAKE_DATA } from 'src/FakeData';
 
 const Home: FC<HomeScreenProps> = ({navigation}) => {
     return (
+        <YStack>
+            <YStack>
+                <Button onPress={() => navigation.navigate('Exercise')}>Start exercising now!</Button>
+                <Button>Choose an exercise</Button>
+            </YStack>
             <FlatList data={FAKE_DATA.workouts}
                 renderItem={({item}) => {
                 return (
@@ -19,6 +24,7 @@ const Home: FC<HomeScreenProps> = ({navigation}) => {
                             subTitle={getWorkoutEndTime(item)}/>
                 )
                 }}/>
+        </YStack>
     );
 }
 
