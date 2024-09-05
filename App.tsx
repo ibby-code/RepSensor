@@ -1,8 +1,9 @@
 import { TamaguiProvider } from 'tamagui';
 import { NavigationContainer, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { tamaguiConfig } from './tamagui.config'
+import tamaguiConfig from './tamagui.config'
 import { useFonts, Inter_500Medium, Inter_700Bold } from '@expo-google-fonts/inter'
 import { useColorScheme } from 'react-native';
+import { registerRootComponent } from 'expo';
 
 import { RootNavigatorStack } from 'src/RouteConfig';
 import Home from 'src/screens/Home/Home';

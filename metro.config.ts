@@ -1,12 +1,13 @@
 import { mergeConfig } from 'metro-config';
 import { getDefaultConfig } from 'expo/metro-config';
 
-const config = mergeConfig(getDefaultConfig(__dirname, { isCSSEnabled: true }), {
+const defaultConfig = getDefaultConfig(__dirname, { isCSSEnabled: true });
+const config = mergeConfig(defaultConfig, {
   resolver: {
     assetExts: ['db', 'mp3', 'ttf', 'obj', 'png', 'jpg'],
     // Expo 49 issue: default metro config needs to include "mjs"
     // https://github.com/expo/expo/issues/23180
-    sourceExts: ['mjs'],
+    sourceExts: [...(defaultConfig.resolver?.sourceExts || []), 'mjs'],
   },
 });
 

@@ -1,17 +1,17 @@
 import { config } from '@tamagui/config/v3'
-import { color, radius, size, space, themes, zIndex } from '@tamagui/themes'
 import { createTamagui, createTokens } from 'tamagui' // or '@tamagui/core'
+import { createInterFont } from '@tamagui/font-inter'
 
-const tokens = createTokens({
-    size,
-    space,
-    zIndex,
-    color,
-    radius,
-})
-
-//export const tamaguiConfig = createTamagui({...config, themes, tokens})
-export const tamaguiConfig = createTamagui(config)
+const headingFont = createInterFont();
+const bodyFont = createInterFont();
+const tamaguiConfig = createTamagui({
+  ...config,
+  fonts: {
+    ...config.fonts,
+    heading: headingFont,
+    body: bodyFont,
+  },
+});
 
 export type Conf = typeof tamaguiConfig
 declare module 'tamagui' {
