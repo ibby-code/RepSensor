@@ -1,0 +1,122 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<IncrementNumberInput /> renders correctly 1`] = `
+<View
+  style={
+    {
+      "flexDirection": "row",
+    }
+  }
+>
+  <View
+    focusVisibleStyle={{}}
+    focusable={true}
+    role="button"
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#fff",
+        "borderBottomColor": "transparent",
+        "borderBottomWidth": 1,
+        "borderLeftColor": "transparent",
+        "borderLeftWidth": 1,
+        "borderRightColor": "transparent",
+        "borderRightWidth": 1,
+        "borderStyle": "solid",
+        "borderTopColor": "transparent",
+        "borderTopWidth": 1,
+        "flexDirection": "row",
+        "flexWrap": "nowrap",
+        "height": 44,
+        "justifyContent": "center",
+        "paddingLeft": 18,
+        "paddingRight": 18,
+      }
+    }
+  >
+    <Text
+      lineBreakMode="clip"
+      numberOfLines={1}
+      style={
+        {
+          "color": "#000",
+          "flexGrow": 0,
+          "flexShrink": 1,
+          "fontFamily": "System",
+          "userSelect": "none",
+        }
+      }
+      suppressHighlighting={true}
+    >
+      -
+    </Text>
+  </View>
+  <TextInput
+    focusVisibleStyle={{}}
+    focusable={true}
+    keyboardType="numeric"
+    onChangeText={[Function]}
+    placeholder="Enter..."
+    style={
+      {
+        "backgroundColor": "#fff",
+        "borderBottomWidth": 1,
+        "borderLeftWidth": 1,
+        "borderRightWidth": 1,
+        "borderStyle": "solid",
+        "borderTopWidth": 1,
+        "color": "#000",
+        "fontFamily": "System",
+        "height": 44,
+        "minWidth": 0,
+        "paddingLeft": 16,
+        "paddingRight": 16,
+      }
+    }
+    value=""
+  />
+  <View
+    focusVisibleStyle={{}}
+    focusable={true}
+    role="button"
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#fff",
+        "borderBottomColor": "transparent",
+        "borderBottomWidth": 1,
+        "borderLeftColor": "transparent",
+        "borderLeftWidth": 1,
+        "borderRightColor": "transparent",
+        "borderRightWidth": 1,
+        "borderStyle": "solid",
+        "borderTopColor": "transparent",
+        "borderTopWidth": 1,
+        "flexDirection": "row",
+        "flexWrap": "nowrap",
+        "height": 44,
+        "justifyContent": "center",
+        "paddingLeft": 18,
+        "paddingRight": 18,
+      }
+    }
+  >
+    <Text
+      lineBreakMode="clip"
+      numberOfLines={1}
+      style={
+        {
+          "color": "#000",
+          "flexGrow": 0,
+          "flexShrink": 1,
+          "fontFamily": "System",
+          "userSelect": "none",
+        }
+      }
+      suppressHighlighting={true}
+    >
+      +
+    </Text>
+  </View>
+</View>
+`;

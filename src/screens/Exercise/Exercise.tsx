@@ -2,12 +2,13 @@ import React, { FC } from 'react';
 
 import { Check, ChevronDown, ChevronUp } from '@tamagui/lucide-icons'
 import { StyleSheet, View, Pressable, Text, FlatList } from 'react-native';
-import { Adapt, Label, Sheet, Button, Select, ListItem, Separator, YStack, YGroup } from 'tamagui'
+import { Adapt, Label, Sheet, Button, Select, ListItem, Separator, YStack, XStack } from 'tamagui'
 
 import { ExerciseType, getWorkoutEndTime, EXERCISE_TYPE_MAP } from 'src/WorkoutTypes';
 import { LinearGradient } from 'tamagui/linear-gradient'
 
 import { ExerciseScreenProps } from 'src/RouteConfig';
+import IncrementNumberInput from 'src/components/IncrementNumberInput/IncrementNumberInput';
 import { FAKE_DATA } from 'src/FakeData';
 
 const Exercise: FC<ExerciseScreenProps> = ({ navigation }) => {
@@ -112,6 +113,18 @@ const Exercise: FC<ExerciseScreenProps> = ({ navigation }) => {
                     </Select.ScrollDownButton>
                 </Select.Content>
             </Select>
+            <XStack>
+                <Button>Start</Button>
+                <YStack>
+                    <IncrementNumberInput
+                        label="Weight"
+                        delta={5} />
+                    <IncrementNumberInput
+                        label="Repititions"
+                        delta={1}
+                        allowFloats={false} />
+                </YStack>
+            </XStack>
         </YStack>
 
     );
