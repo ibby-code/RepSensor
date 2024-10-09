@@ -7,11 +7,11 @@ export type SensorData = {
 
 /** One set of an exercises repetition. */
 export type RepSet = {
-    data: SensorData
     actualReps: number
-    predictedReps: number
-    startTimeMs: number
+    data?: SensorData
     endTimeMs: number
+    predictedReps?: number
+    startTimeMs: number
     weight: number
 }
 

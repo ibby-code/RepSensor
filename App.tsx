@@ -37,7 +37,7 @@ export default function App() {
               name="Workout"
               component={Workout}
               options={headerOptions}
-              initialParams={{ workoutId: '' }}
+              initialParams={{ workoutId: '', isWorkoutEnd: false }}
             />
             <RootNavigatorStack.Screen
               name="Exercise"
