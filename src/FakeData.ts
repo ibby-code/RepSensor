@@ -205,9 +205,10 @@ const FAKE_FRIDAY: Workout = {
 }
 
 export const FAKE_DATA: WorkoutData = {
-    workouts: [
-        FAKE_MONDAY,
-        FAKE_WEDNESDAY,
-        FAKE_FRIDAY,
-    ]
+    workouts:
+    {
+        [FAKE_MONDAY.id]: FAKE_MONDAY,
+        [FAKE_WEDNESDAY.id]: FAKE_WEDNESDAY,
+        [FAKE_FRIDAY.id]: FAKE_FRIDAY,
+    }
 }

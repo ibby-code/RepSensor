@@ -2,19 +2,23 @@ import React, { FC } from 'react';
 import {StyleSheet, View, Pressable, Text, FlatList} from 'react-native';
 import { Button, ListItem, Separator, YStack, YGroup } from 'tamagui'
 
-import { getWorkoutEndTime } from 'src/WorkoutTypes';
+import { Workout, getWorkoutRange, getWorkoutEndTime } from 'src/WorkoutTypes';
 
 import { HomeScreenProps } from 'src/RouteConfig';
-import { FAKE_DATA } from 'src/FakeData';
+import { useUserData } from 'src/UserDataContext';
 
 const Home: FC<HomeScreenProps> = ({navigation}) => {
+    const data = useUserData();
+    const sortedWorkouts = Object.values(data.workouts).sort((a: Workout, b: Workout) => 
+        getWorkoutRange(a).end.isAfter(getWorkoutRange(b).end) ? 1 : -1
+    );
     return (
         <YStack>
             <YStack>
                 <Button onPress={() => navigation.navigate('Exercise')}>Start exercising now!</Button>
                 <Button>Choose an exercise</Button>
             </YStack>
-            <FlatList data={FAKE_DATA.workouts}
+            <FlatList data={sortedWorkouts}
                 renderItem={({item}) => {
                 return (
                         <ListItem hoverTheme bordered

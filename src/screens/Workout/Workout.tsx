@@ -3,13 +3,14 @@ import { StyleSheet, View, Pressable, Text, FlatList } from 'react-native';
 import { Button, Input, ListItem, Separator, XStack, YGroup, YStack } from 'tamagui'
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { getWorkoutRange, getExerciseDisplay, Workout } from 'src/WorkoutTypes';
+import { getWorkoutRange, getExerciseDisplay, Workout as WorkoutType } from 'src/WorkoutTypes';
 import { WorkoutScreenProps } from 'src/RouteConfig';
-import { FAKE_DATA } from 'src/FakeData';
+import { useUserData } from 'src/UserDataContext';
 
 const Workout: FC<WorkoutScreenProps> = ({ route, navigation }) => {
     const { workoutId, isWorkoutEnd } = route.params;
-    const workout = FAKE_DATA.workouts.find((w) => w.id === workoutId);
+    const data = useUserData();
+    const workout = data.workouts[workoutId];
     const [nameValue, setNameValue] = useState(workout?.name || "");
     let newWorkoutJSX = <></>;
     if (isWorkoutEnd) {
@@ -48,7 +49,7 @@ const Workout: FC<WorkoutScreenProps> = ({ route, navigation }) => {
     );
 }
 
-function getTotalPoundsText(workout?: Workout): string {
+function getTotalPoundsText(workout?: WorkoutType): string {
     if (!workout) return "0lbs";
     const total = workout.exercises.reduce(
         (acc, e) => acc + e.sets.reduce(
@@ -57,7 +58,7 @@ function getTotalPoundsText(workout?: Workout): string {
     return `{total}lbs`;
 }
 
-function getWorkoutLengthText(workout?: Workout): string {
+function getWorkoutLengthText(workout?: WorkoutType): string {
     if (!workout) return "0 seconds";
     const range = getWorkoutRange(workout);
     const diff = range.start.diff(range.end, "minutes");

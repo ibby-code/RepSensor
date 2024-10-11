@@ -47,9 +47,14 @@ export type Workout = {
     exercises: Exercise[]
 }
 
+/** Maps a workout to its id. */
+export type WorkoutMap = {
+    [key: string]: Workout;
+}
+
 /** All of a users workout data. */
 export type WorkoutData = {
-    workouts: Workout[]
+    workouts: WorkoutMap 
 }
 
 type TimeRange = {
