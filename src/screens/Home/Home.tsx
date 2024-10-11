@@ -15,7 +15,7 @@ const Home: FC<HomeScreenProps> = ({navigation}) => {
     return (
         <YStack>
             <YStack>
-                <Button onPress={() => navigation.navigate('Exercise')}>Start exercising now!</Button>
+                <Button onPress={() => navigation.navigate('Exercise', {})}>Start exercising now!</Button>
                 <Button>Choose an exercise</Button>
             </YStack>
             <FlatList data={sortedWorkouts}

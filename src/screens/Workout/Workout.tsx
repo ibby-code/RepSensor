@@ -1,30 +1,62 @@
-import React, { FC, useState} from 'react';
+import React, { FC, useCallback, useEffect, useState} from 'react';
 import { StyleSheet, View, Pressable, Text, FlatList } from 'react-native';
-import { Button, Input, ListItem, Separator, XStack, YGroup, YStack } from 'tamagui'
+import { Button, Input, Label, ListItem, Separator, XStack, YGroup, YStack } from 'tamagui'
+import { debounce } from 'underscore';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { getWorkoutRange, getExerciseDisplay, Workout as WorkoutType } from 'src/WorkoutTypes';
+import { getWorkoutRange, getExerciseDisplay, Exercise, Workout as WorkoutType } from 'src/WorkoutTypes';
 import { WorkoutScreenProps } from 'src/RouteConfig';
-import { useUserData } from 'src/UserDataContext';
+import { useUserData, useUserDataDispatch, UserDataChange } from 'src/UserDataContext';
+
+const TEXT_DEBOUNCE_MS = 1000;
 
 const Workout: FC<WorkoutScreenProps> = ({ route, navigation }) => {
     const { workoutId, isWorkoutEnd } = route.params;
     const data = useUserData();
+    const dispatch = useUserDataDispatch();
     const workout = data.workouts[workoutId];
     const [nameValue, setNameValue] = useState(workout?.name || "");
+    useEffect(() => {
+        if (isWorkoutEnd) {
+            dispatch({type: UserDataChange.SAVE_WORKOUT_DRAFT})
+        }
+    }, []);
+
+    const saveNameValue = (name: string) => {
+        dispatch({type: UserDataChange.UPDATE_WORKOUT_NAME, workoutId, name});
+        console.log('saving value', name);
+    };
+    const saveInputDebounced = useCallback(debounce(saveNameValue, TEXT_DEBOUNCE_MS), []);
+
+
+    if (!workout) {
+        if (isWorkoutEnd) {
+            console.log('didn\'t find workout', workoutId);
+            return (<Text>Wait!</Text>)
+        }
+        console.log("No workout found");
+        navigation.navigate("Home");
+    }
     let newWorkoutJSX = <></>;
     if (isWorkoutEnd) {
         newWorkoutJSX = (
-            <YStack>
+            <YStack alignItems="center">
                 <Text>Congrats! You completed {workout?.exercises.length} exercises!</Text>
                 <Text>You lifted {getTotalPoundsText(workout)}!</Text>
                 <Text>You spent {getWorkoutLengthText(workout)} working out!</Text>
                 <Text>Name your workout?</Text>
-                <Input
-                    placeholder="Enter a name"
-                    onChangeText={(text) => setNameValue(text)}
-                    value={workout?.name || ""} />
-                <Button onPress={() => saveNameValue(nameValue)}>+</Button>
+                <XStack padding="$4" alignItems="center">
+                    <Label htmlFor="name">
+                        Name
+                    </Label>
+                    <Input
+                        id="name"
+                        flex={1}
+                        margin="$2"
+                        placeholder={workout.name || ""}
+                        onChangeText={(text) => {setNameValue(text); saveInputDebounced(text);}}/>
+                    <Button onPress={() => saveNameValue(nameValue)}>+</Button>
+                </XStack>
             </YStack>
         )
     }
@@ -51,22 +83,20 @@ const Workout: FC<WorkoutScreenProps> = ({ route, navigation }) => {
 
 function getTotalPoundsText(workout?: WorkoutType): string {
     if (!workout) return "0lbs";
+    console.log("weight check", JSON.stringify(workout?.exercises));
     const total = workout.exercises.reduce(
         (acc, e) => acc + e.sets.reduce(
             (acc, set) => acc + (set.weight * set.actualReps), 0),
              0);
-    return `{total}lbs`;
+    return `${total}lbs`;
 }
 
 function getWorkoutLengthText(workout?: WorkoutType): string {
     if (!workout) return "0 seconds";
-    const range = getWorkoutRange(workout);
-    const diff = range.start.diff(range.end, "minutes");
+    const {start, end} = getWorkoutRange(workout);
+    console.log(start.format('L'), "-", end.format("L"))
+    const diff = end.diff(start, "minutes");
     return `${diff} minutes`;
-}
-
-function saveNameValue(value: string) {
-
 }
 
 export default Workout;

@@ -1,7 +1,7 @@
 import { NativeStackScreenProps, createNativeStackNavigator } from '@react-navigation/native-stack';
 
 type RootStackParamList = {
-  Exercise: undefined;
+  Exercise: {workoutId?: string, exerciseId?: string};
   Home: undefined;
   Workout: { workoutId: string; isWorkoutEnd?: boolean };
 }

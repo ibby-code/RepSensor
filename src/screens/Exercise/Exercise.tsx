@@ -1,9 +1,9 @@
 import moment from 'moment'
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
-import { Check, ChevronDown, ChevronUp } from '@tamagui/lucide-icons'
-import { StyleSheet, View, Pressable, Text, FlatList } from 'react-native';
-import { Adapt, Label, Sheet, Button, Select, ListItem, Separator, YStack, XStack } from 'tamagui'
+import { Check, ChevronDown, ChevronUp, User } from '@tamagui/lucide-icons'
+import { Alert, StyleSheet, View, Pressable, Text, FlatList } from 'react-native';
+import { Adapt, Label, Sheet, Button, Select, ListItem, Separator, YStack, XStack, Spinner } from 'tamagui'
 
 import { ExerciseType, getWorkoutEndTime, EXERCISE_TYPE_MAP } from 'src/WorkoutTypes';
 import { LinearGradient } from 'tamagui/linear-gradient'
@@ -12,18 +12,73 @@ import { ExerciseScreenProps } from 'src/RouteConfig';
 import IncrementNumberInput from 'src/components/IncrementNumberInput/IncrementNumberInput';
 import { FAKE_DATA } from 'src/FakeData';
 import { RepSet } from 'src/WorkoutTypes';
+import {useUserData, useUserDataDispatch, UserDataChange, UserDataAction} from 'src/UserDataContext';
 
 const EMPTY_SET: RepSet = { actualReps: 0, endTimeMs: 0, startTimeMs: 0, weight: 0 };
 
-const Exercise: FC<ExerciseScreenProps> = ({ navigation }) => {
-    const [exerciseType, setExerciseType] = useState<ExerciseType | null>(null)
+const Exercise: FC<ExerciseScreenProps> = ({ route, navigation }) => {
+    const { workoutId, exerciseId } = route.params;
+    const data = useUserData();
+    const dispatch = useUserDataDispatch();
+    const [exerciseType, setExerciseType] = useState<ExerciseType>(ExerciseType.UNSET)
     const [sets, setSets] = useState<RepSet[]>([{ ...EMPTY_SET }]);
+    console.log("render", "workout", workoutId, "exercise", exerciseId);
 
-    const updateRecentSet = (updater: (set: RepSet) => void) => {
+    useEffect(() => {
+        if (data.draft && (!exerciseId || !workoutId)) {
+            console.log('set params for draft');
+            navigation.setParams({workoutId: data.draft.id, exerciseId: data.draft.exercises ? data.draft.exercises[0].id : ''})
+            return;
+        }
+        if (!workoutId) {
+            dispatch({type: UserDataChange.CREATE_WORKOUT_DRAFT});
+        } else if (!exerciseId) {
+            dispatch({type: UserDataChange.CREATE_EXERCISE_DRAFT, workoutId});
+        }
+        navigation.addListener('beforeRemove', (e) => {
+            console.log('before remove!', data.draft);
+            if (!data.draft) {
+                return;
+            }
+            e.preventDefault();
+            Alert.alert(
+                "Discard workout?",
+                "You have unsaved changes. Are you sure you want to discard your workout?",
+                [
+                    {text: 'Cancel', style: 'cancel', onPress: () => {}},
+                    {text: 'Save & exit', onPress: () => {
+                        dispatch({type:UserDataChange.SAVE_WORKOUT_DRAFT});
+                        navigation.dispatch(e.data.action);
+                    }},
+                    {text: 'Discard & exit', onPress: () => navigation.dispatch(e.data.action)},
+                ]
+            )
+
+        });
+
+    }, [navigation, data]);
+
+    if (!workoutId || !exerciseId) {
+       return (
+            <YStack fullscreen={true}>
+                <Spinner size="large" color="$green10" />
+            </YStack>
+        )
+    }
+    const saveExercise = (xsets: RepSet[]) => {
+        const exercise = {id: exerciseId, type: exerciseType, sets: xsets};
+        dispatch({type: UserDataChange.UPDATE_EXERCISE_DRAFT, workoutId, exercise});
+    }
+
+    const updateRecentSet = (updater: (set: RepSet) => void, saveUpdate = false) => {
         const set = sets.pop();
         if (!set) return;
         updater(set);
-        setSets([...sets, set]);
+        const newSets = [...sets, set];
+        setSets(newSets);
+        if (saveUpdate) {
+            saveExercise(newSets);
+       }
     }
     let buttonHTML;
     if (!sets.length || !sets[sets.length - 1].startTimeMs) {
@@ -31,16 +86,20 @@ const Exercise: FC<ExerciseScreenProps> = ({ navigation }) => {
         buttonHTML = <Button onPress={() => updateRecentSet(startTimeUpdater)}>Start</Button>
     } else if (!sets[sets.length - 1].endTimeMs) {
         const endTimeUpdater = (set: RepSet) => set.endTimeMs = moment().unix();
-        buttonHTML = <Button onPress={() => updateRecentSet(endTimeUpdater)}>End</Button>
+        buttonHTML = <Button onPress={() => updateRecentSet(endTimeUpdater, true)}>End</Button>
     } else {
         const lastSet = sets.length ? sets[sets.length - 1] : EMPTY_SET;
-        const newSet = {...EMPTY_SET, startTimeMs: moment().unix(), weight: lastSet.weight, actualReps: lastSet.actualReps};
-        buttonHTML = <Button onPress={() => setSets([...sets, newSet])}>Next</Button>
+        const saveAndCreateNew = () => {
+            saveExercise(sets);
+            const newSet = { ...EMPTY_SET, startTimeMs: moment().unix(), weight: lastSet.weight, actualReps: lastSet.actualReps };
+            setSets([...sets, newSet]);
+        }
+        buttonHTML = <Button onPress={() => saveAndCreateNew()}>Next</Button>
     }
 
     return (
         <YStack fullscreen={true}>
-            <Select value={exerciseType?.toString()} onValueChange={(val) => setExerciseType(val as ExerciseType)}>
+            <Select value={exerciseType != ExerciseType.UNSET ? exerciseType.toString() : undefined} onValueChange={(val) => setExerciseType(val as ExerciseType)}>
                 <Select.Trigger width={220} iconAfter={ChevronDown}>
                     <Select.Value placeholder="Select a movement" />
                 </Select.Trigger>
@@ -163,14 +222,14 @@ const Exercise: FC<ExerciseScreenProps> = ({ navigation }) => {
                 )} />
             <XStack alignSelf="flex-end">
                 <Button flex={1}
-                        onPress={() => navigation.navigate('Workout', {workoutId: '', isWorkoutEnd: true})}>
+                    onPress={() => {console.log('navigate to', workoutId);navigation.navigate('Workout', { workoutId: workoutId || '', isWorkoutEnd: true });}}>
                     End
                 </Button>
                 <Button flex={3}
-                        onPress={() => navigation.navigate('Exercise')}>
-                    Next exercise
+                    onPress={() => navigation.navigate('Exercise', {workoutId: workoutId})}>
+                    New exercise
                 </Button>
-            </XStack> 
+            </XStack>
         </YStack>
     );
 }

@@ -1,3 +1,4 @@
+import { assert } from 'console'
 import moment from 'moment'
 
 /** File that has the sensor data. */
@@ -17,6 +18,7 @@ export type RepSet = {
 
 /** Types of exercises. */
 export enum ExerciseType {
+    UNSET = 'unset',
     BICEP_CURL = 'bicep_curl',
     TRICEP_EXTENSION = 'tricep_extenstion',
 }
@@ -91,7 +93,11 @@ export function getExerciseDisplay(exercise: Exercise): { title: string, subtitl
     const exerciseDisplay = EXERCISE_TYPE_MAP.get(exercise.type)?.displayText || 'Exercise';
     if (exercise.sets.length) {
         const avgWeight = exercise.sets.reduce((sum, s) => sum + s.weight, 0) / exercise.sets.length;
-        const title = `${exerciseDisplay} - ${exercise.sets.length} sets, avg ${avgWeight}${avgWeight > 1 ? 'lbs' : 'lb'}`;
+        const avgReps = exercise.sets.reduce((sum, s) => sum + s.actualReps, 0) / exercise.sets.length;
+        const title = `${exerciseDisplay} - ${exercise.sets.length} sets @ ${
+            roundMeasure(avgReps)}${avgReps > 1 ? ' reps' : ' rep'} / ${
+                roundMeasure(avgWeight)}${avgWeight > 1 ? 'lbs' : 'lb'}`;
+
         const {start, end} = getExerciseRange(exercise);
         const subtitle = `From ${start.format('LT')} to ${end.format('LT')}`;
         return {title, subtitle}
@@ -99,4 +105,22 @@ export function getExerciseDisplay(exercise: Exercise): { title: string, subtitl
     return {title: `${exerciseDisplay} - N/A`, subtitle: 'Not started'};
     // Bicep curls - 5 sets, avg 15.5lb
     // From {start} - {end} with {avg_rest} of rest
+}
+
+/** Turns a partial workout into a full object */
+export function validateFullWorkout(workout: Partial<Workout>): Workout|undefined {
+    checkExistance(Boolean(workout.id), "Id not present");
+    checkExistance(Boolean(workout.name), "Name not present");
+    checkExistance(Boolean(workout.exercises), "Exercises not present");
+    return workout as Workout;
+}
+
+function roundMeasure(num: number): string {
+    return num == Math.round(num) ? num.toString() : num.toFixed(2);
+}
+
+function checkExistance(check: boolean, msg = "") {
+    if (!check) {
+        throw new Error(msg)
+    }
 }
