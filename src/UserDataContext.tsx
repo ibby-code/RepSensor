@@ -68,13 +68,13 @@ function userDataReducer(state: UserData, action: UserDataAction) {
       if (!work || work.id != action.workoutId) return state;
       work.exercises = work.exercises || [];
       work.exercises.push({id: String(work.exercises.length), type: ExerciseType.UNSET, sets: []});
-      return {...state, workouts : {...state.workouts, [action.workoutId]: work}};
+      return {...state, draft: work};
     case UserDataChange.UPDATE_EXERCISE_DRAFT:
       work = state.draft;
       const exerciseIndex = work?.exercises?.findIndex((e) => e.id == action.exercise.id);
       if (!work || !work.exercises || exerciseIndex == undefined || exerciseIndex == -1) return state;
       work.exercises[exerciseIndex] = action.exercise;
-      return {...state, workouts : {...state.workouts, [action.workoutId]: work}};
+      return {...state, draft: work};
     case UserDataChange.SAVE_WORKOUT_DRAFT:
       if (!state.draft || !state.draft.id) return state;
       state.draft.name = generateWorkoutName(state.draft);
