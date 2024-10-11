@@ -1,8 +1,6 @@
 import { createContext, useReducer, useContext, Dispatch, useEffect } from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import { Exercise, ExerciseType, Workout, WorkoutMap, validateFullWorkout} from './WorkoutTypes';
 import { FAKE_DATA } from './FakeData';
-import { RootStackParamList} from './RouteConfig';
 
 interface UserData {
   draft?: Partial<Workout>;

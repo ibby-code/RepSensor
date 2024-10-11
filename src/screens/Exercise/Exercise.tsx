@@ -41,19 +41,7 @@ const Exercise: FC<ExerciseScreenProps> = ({ route, navigation }) => {
                 return;
             }
             e.preventDefault();
-            Alert.alert(
-                "Discard workout?",
-                "You have unsaved changes. Are you sure you want to discard your workout?",
-                [
-                    {text: 'Cancel', style: 'cancel', onPress: () => {}},
-                    {text: 'Save & exit', onPress: () => {
-                        dispatch({type:UserDataChange.SAVE_WORKOUT_DRAFT});
-                        navigation.dispatch(e.data.action);
-                    }},
-                    {text: 'Discard & exit', onPress: () => navigation.dispatch(e.data.action)},
-                ]
-            )
-
+            showDiscardConfirmation(() => navigation.dispatch(e.data.action));
         });
 
     }, [navigation, data]);
@@ -95,6 +83,20 @@ const Exercise: FC<ExerciseScreenProps> = ({ route, navigation }) => {
             setSets([...sets, newSet]);
         }
         buttonHTML = <Button onPress={() => saveAndCreateNew()}>Next</Button>
+    }
+    const setsComplete = sets.filter((val) => Boolean(val.endTimeMs))
+    let endButtonHTML;
+    if (setsComplete.length) {
+        endButtonHTML =
+            <Button flex={1}
+                onPress={() => navigation.navigate('Workout', { workoutId: workoutId || '', isWorkoutEnd: true })}>
+                End
+            </Button>
+    } else {
+        endButtonHTML =
+            <Button flex={1} onPress={() => navigation.navigate("Home")}>
+                Exit
+            </Button>
     }
 
     return (
@@ -213,7 +215,7 @@ const Exercise: FC<ExerciseScreenProps> = ({ route, navigation }) => {
                         disableFloats={true} />
                 </YStack>
             </XStack>
-            <FlatList data={sets.filter((val) => Boolean(val.endTimeMs))}
+            <FlatList data={setsComplete}
                 renderItem={({ item }) => (
                     <ListItem bordered
                         key={item.endTimeMs}
@@ -221,10 +223,7 @@ const Exercise: FC<ExerciseScreenProps> = ({ route, navigation }) => {
                         subTitle={getRepTimeRange(item.startTimeMs, item.endTimeMs)} />
                 )} />
             <XStack alignSelf="flex-end">
-                <Button flex={1}
-                    onPress={() => {console.log('navigate to', workoutId);navigation.navigate('Workout', { workoutId: workoutId || '', isWorkoutEnd: true });}}>
-                    End
-                </Button>
+                {endButtonHTML}
                 <Button flex={3}
                     onPress={() => navigation.navigate('Exercise', {workoutId: workoutId})}>
                     New exercise
@@ -240,6 +239,17 @@ function getRepTitle(reps: number, weight: number): string {
 
 function getRepTimeRange(startTimeMs: number, endTimeMs: number): string {
     return `${moment.unix(startTimeMs).format("LT")} - ${moment.unix(endTimeMs).format("LT")}`;
+}
+
+function showDiscardConfirmation(confirmCallback: () => void): void {
+    Alert.alert(
+        "Discard workout?",
+        "You have unsaved changes. Are you sure you want to discard your workout?",
+        [
+            {text: 'Cancel', style: 'cancel', onPress: () => {}},
+            {text: 'Discard & exit', onPress: () => confirmCallback()},
+        ]
+    );
 }
 
 export default Exercise;
