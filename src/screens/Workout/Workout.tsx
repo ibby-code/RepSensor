@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useState} from 'react';
 import { StyleSheet, View, Pressable, Text, FlatList } from 'react-native';
 import { Button, Input, Label, ListItem, Separator, XStack, YGroup, YStack } from 'tamagui'
-import { debounce } from 'underscore';
+import _ from 'underscore';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
 import { getWorkoutRange, getExerciseDisplay, Exercise, Workout as WorkoutType } from 'src/WorkoutTypes';
@@ -25,9 +25,9 @@ const Workout: FC<WorkoutScreenProps> = ({ route, navigation }) => {
 
     const saveNameValue = (name: string) => {
         dispatch({type: UserDataChange.UPDATE_WORKOUT_NAME, workoutId, name});
-        console.log('saving value', name);
+        console.log('saving value', name, "workout id", workoutId);
     };
-    const saveInputDebounced = useCallback(debounce(saveNameValue, TEXT_DEBOUNCE_MS), []);
+    const saveInputDebounced = useCallback(_.debounce(saveNameValue, TEXT_DEBOUNCE_MS), [workoutId]);
 
 
     if (!workout) {

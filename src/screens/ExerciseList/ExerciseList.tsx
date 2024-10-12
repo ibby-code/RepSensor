@@ -6,6 +6,7 @@ import { Alert, View, useWindowDimensions } from 'react-native';
 import { TabView } from 'react-native-tab-view';
 import { useUserData, useUserDataDispatch, UserDataChange, UserDataAction } from 'src/UserDataContext';
 import { Exercise, EXERCISE_TYPE_MAP } from 'src/WorkoutTypes';
+import ExerciseEditor from 'src/components/ExerciseEditor/ExerciseEditor';
 
 
 type ExerciseTab = {
@@ -58,7 +59,10 @@ const ExerciseList: FC<ExerciseListScreenProps> = ({ route, navigation }) => {
     console.log("routes", routes);
     const renderScene = ({ route }: { route: ExerciseTab }) =>
         <View style={{ flex: 1 }}>
-            <Text>{route.exercise.type}</Text>
+            <ExerciseEditor exercise={route.exercise} onSave={(exercise: Exercise) => {
+                dispatch({type: UserDataChange.UPDATE_EXERCISE_DRAFT, exercise});
+                setDirtyForm(true);
+            }}/>
         </View>
     let endButtonHTML;
     if (isDirtyForm) {

@@ -1,63 +1,31 @@
 import moment from 'moment'
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 
-import { Check, ChevronDown, ChevronUp, User } from '@tamagui/lucide-icons'
-import { Alert, StyleSheet, View, Pressable, Text, FlatList } from 'react-native';
-import { Adapt, Label, Sheet, Button, Select, ListItem, Separator, YStack, XStack, Spinner } from 'tamagui'
-
-import { ExerciseType, getWorkoutEndTime, EXERCISE_TYPE_MAP } from 'src/WorkoutTypes';
+import { FlatList } from 'react-native';
+import { Check, ChevronDown, ChevronUp } from '@tamagui/lucide-icons'
+import { Adapt, Button, ListItem, Select, Sheet, XStack, YStack } from 'tamagui';
 import { LinearGradient } from 'tamagui/linear-gradient'
+import { EXERCISE_TYPE_MAP, Exercise, ExerciseType, RepSet } from 'src/WorkoutTypes';
 
-import { ExerciseScreenProps } from 'src/RouteConfig';
 import IncrementNumberInput from 'src/components/IncrementNumberInput/IncrementNumberInput';
-import { FAKE_DATA } from 'src/FakeData';
-import { RepSet } from 'src/WorkoutTypes';
-import {useUserData, useUserDataDispatch, UserDataChange, UserDataAction} from 'src/UserDataContext';
+
+interface ExerciseEditorProps {
+    exercise: Exercise;
+    onSave: (e: Exercise) => void;
+}
 
 const EMPTY_SET: RepSet = { actualReps: 0, endTimeMs: 0, startTimeMs: 0, weight: 0 };
 
-const Exercise: FC<ExerciseScreenProps> = ({ route, navigation }) => {
-    const { workoutId, exerciseId } = route.params;
-    const data = useUserData();
-    const dispatch = useUserDataDispatch();
-    const [exerciseType, setExerciseType] = useState<ExerciseType>(ExerciseType.UNSET)
-    const [sets, setSets] = useState<RepSet[]>([{ ...EMPTY_SET }]);
-    console.log("render", "workout", workoutId, "exercise", exerciseId);
+const ExerciseEditor: FC<ExerciseEditorProps> = ({ exercise, onSave }) => {
+    const [exerciseType, setExerciseType] = useState<ExerciseType>(exercise.type);
+    const [sets, setSets] = useState<RepSet[]>(
+        exercise.sets.length ? exercise.sets : [{ ...EMPTY_SET }]);
 
-    useEffect(() => {
-        if (data.draft && (!exerciseId || !workoutId)) {
-            console.log('set params for draft');
-            navigation.setParams({workoutId: data.draft.id, exerciseId: data.draft.exercises ? data.draft.exercises[0].id : ''})
-            return;
-        }
-        if (!workoutId) {
-            dispatch({type: UserDataChange.CREATE_WORKOUT_DRAFT});
-        } else if (!exerciseId) {
-            dispatch({type: UserDataChange.CREATE_EXERCISE_DRAFT, workoutId});
-        }
-        navigation.addListener('beforeRemove', (e) => {
-            console.log('before remove!', data.draft);
-            if (!data.draft) {
-                return;
-            }
-            e.preventDefault();
-            showDiscardConfirmation(() => navigation.dispatch(e.data.action));
-        });
 
-    }, [navigation, data]);
-
-    if (!workoutId || !exerciseId) {
-       return (
-            <YStack fullscreen={true}>
-                <Spinner size="large" color="$green10" />
-            </YStack>
-        )
+    const saveExercise = (newSets: RepSet[]) => {
+        const newExercise = {id: exercise.id, type: exerciseType, sets: newSets};
+        onSave(newExercise);
     }
-    const saveExercise = (xsets: RepSet[]) => {
-        const exercise = {id: exerciseId, type: exerciseType, sets: xsets};
-        dispatch({type: UserDataChange.UPDATE_EXERCISE_DRAFT, workoutId, exercise});
-    }
-
     const updateRecentSet = (updater: (set: RepSet) => void, saveUpdate = false) => {
         const set = sets.pop();
         if (!set) return;
@@ -84,23 +52,9 @@ const Exercise: FC<ExerciseScreenProps> = ({ route, navigation }) => {
         }
         buttonHTML = <Button onPress={() => saveAndCreateNew()}>Next</Button>
     }
-    const setsComplete = sets.filter((val) => Boolean(val.endTimeMs))
-    let endButtonHTML;
-    if (setsComplete.length) {
-        endButtonHTML =
-            <Button flex={1}
-                onPress={() => navigation.navigate('Workout', { workoutId: workoutId || '', isWorkoutEnd: true })}>
-                End
-            </Button>
-    } else {
-        endButtonHTML =
-            <Button flex={1} onPress={() => navigation.navigate("Home")}>
-                Exit
-            </Button>
-    }
-
-    return (
-        <YStack fullscreen={true}>
+ 
+    return ( 
+        <>
             <Select value={exerciseType != ExerciseType.UNSET ? exerciseType.toString() : undefined} onValueChange={(val) => setExerciseType(val as ExerciseType)}>
                 <Select.Trigger width={220} iconAfter={ChevronDown}>
                     <Select.Value placeholder="Select a movement" />
@@ -205,31 +159,25 @@ const Exercise: FC<ExerciseScreenProps> = ({ route, navigation }) => {
                     <IncrementNumberInput
                         label="Enter a weight"
                         value={sets[sets.length - 1].weight}
-                        onChange={(weight) => updateRecentSet((set) => set.weight = weight)}
+                        onChange={(weight: number) => updateRecentSet((set) => set.weight = weight)}
                         delta={5} />
                     <IncrementNumberInput
                         label="Enter # of reps"
                         value={sets[sets.length - 1].actualReps}
-                        onChange={(reps) => updateRecentSet((set) => set.actualReps = reps)}
+                        onChange={(reps: number) => updateRecentSet((set) => set.actualReps = reps)}
                         delta={1}
                         disableFloats={true} />
                 </YStack>
             </XStack>
-            <FlatList data={setsComplete}
+            <FlatList data={sets.filter((val) => Boolean(val.endTimeMs))}
                 renderItem={({ item }) => (
                     <ListItem bordered
                         key={item.endTimeMs}
                         title={getRepTitle(item.actualReps, item.weight)}
                         subTitle={getRepTimeRange(item.startTimeMs, item.endTimeMs)} />
                 )} />
-            <XStack alignSelf="flex-end">
-                {endButtonHTML}
-                <Button flex={3}
-                    onPress={() => navigation.navigate('Exercise', {workoutId: workoutId})}>
-                    New exercise
-                </Button>
-            </XStack>
-        </YStack>
+        </>
+
     );
 }
 
@@ -241,15 +189,6 @@ function getRepTimeRange(startTimeMs: number, endTimeMs: number): string {
     return `${moment.unix(startTimeMs).format("LT")} - ${moment.unix(endTimeMs).format("LT")}`;
 }
 
-function showDiscardConfirmation(confirmCallback: () => void): void {
-    Alert.alert(
-        "Discard workout?",
-        "You have unsaved changes. Are you sure you want to discard your workout?",
-        [
-            {text: 'Cancel', style: 'cancel', onPress: () => {}},
-            {text: 'Discard & exit', onPress: () => confirmCallback()},
-        ]
-    );
-}
 
-export default Exercise;
+
+export default ExerciseEditor;
