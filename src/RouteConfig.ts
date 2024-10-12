@@ -4,6 +4,7 @@ type RootStackParamList = {
   Exercise: {workoutId?: string, exerciseId?: string};
   Home: undefined;
   Workout: { workoutId: string; isWorkoutEnd?: boolean };
+  ExerciseList: {workoutId?: string};
 }
 
 /** Root navigation stack for the app. */
@@ -18,4 +19,7 @@ export type WorkoutScreenProps = NativeStackScreenProps<RootStackParamList, 'Wor
 
 /** Properties for the Exercise screen */
 export type ExerciseScreenProps = NativeStackScreenProps<RootStackParamList, 'Exercise'>;
+
+/** Properties for the ExerciseList screen */
+export type ExerciseListScreenProps = NativeStackScreenProps<RootStackParamList, 'ExerciseList'>;
 

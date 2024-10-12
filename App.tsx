@@ -10,6 +10,7 @@ import { RootNavigatorStack } from 'src/RouteConfig';
 import Home from 'src/screens/Home/Home';
 import Workout from 'src/screens/Workout/Workout';
 import Exercise from 'src/screens/Exercise/Exercise';
+import ExerciseList from 'src/screens/ExerciseList/ExerciseList';
 
 export default function App() {
   const headerOptions = {
@@ -44,6 +45,11 @@ export default function App() {
               <RootNavigatorStack.Screen
                 name="Exercise"
                 component={Exercise}
+                options={headerOptions}
+              />
+              <RootNavigatorStack.Screen
+                name="ExerciseList"
+                component={ExerciseList}
                 options={headerOptions}
               />
             </RootNavigatorStack.Navigator>

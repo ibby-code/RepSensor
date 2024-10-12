@@ -17,8 +17,9 @@ const Workout: FC<WorkoutScreenProps> = ({ route, navigation }) => {
     const workout = data.workouts[workoutId];
     const [nameValue, setNameValue] = useState(workout?.name || "");
     useEffect(() => {
-        if (isWorkoutEnd) {
+        if (isWorkoutEnd && data.draft) {
             dispatch({type: UserDataChange.SAVE_WORKOUT_DRAFT})
+            navigation.setParams({workoutId: data.draft.id})
         }
     }, []);
 

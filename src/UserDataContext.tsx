@@ -19,8 +19,8 @@ export enum UserDataChange {
 export type UserDataAction =
   | { type: UserDataChange.LOAD_WORKOUTS, workouts: Workout[] }
   | { type: UserDataChange.CREATE_WORKOUT_DRAFT }
-  | { type: UserDataChange.CREATE_EXERCISE_DRAFT, workoutId: string }
-  | { type: UserDataChange.UPDATE_EXERCISE_DRAFT, workoutId: string, exercise: Exercise }
+  | { type: UserDataChange.CREATE_EXERCISE_DRAFT}
+  | { type: UserDataChange.UPDATE_EXERCISE_DRAFT, exercise: Exercise }
   | { type: UserDataChange.SAVE_WORKOUT_DRAFT}
   | { type: UserDataChange.UPDATE_WORKOUT_NAME, workoutId: string, name: string}
 
@@ -65,7 +65,7 @@ function userDataReducer(state: UserData, action: UserDataAction) {
       return { ...state, draft: { id: String(Object.keys(state.workouts).length), name: '', exercises: [{id: '0', type: ExerciseType.UNSET, sets: []}] } };
     case UserDataChange.CREATE_EXERCISE_DRAFT:
       work = state.draft;
-      if (!work || work.id != action.workoutId) return state;
+      if (!work) return state;
       work.exercises = work.exercises || [];
       work.exercises.push({id: String(work.exercises.length), type: ExerciseType.UNSET, sets: []});
       return {...state, draft: work};
