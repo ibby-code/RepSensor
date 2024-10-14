@@ -1,12 +1,14 @@
 import React, { FC, useCallback, useEffect, useState} from 'react';
 import { StyleSheet, View, Pressable, Text, FlatList } from 'react-native';
-import { Button, Input, Label, ListItem, Separator, XStack, YGroup, YStack } from 'tamagui'
+import { Button, H5, H4, H6, Input, Label, ListItem, Spinner, XStack, YGroup, YStack } from 'tamagui'
 import _ from 'underscore';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { getWorkoutRange, getExerciseDisplay, Exercise, Workout as WorkoutType } from 'src/WorkoutTypes';
-import { WorkoutScreenProps } from 'src/RouteConfig';
+import { getWorkoutEndTime, getWorkoutRange, getExerciseDisplay, Exercise, Workout as WorkoutType } from 'src/WorkoutTypes';
+import { WorkoutScreenProps } from 'src/screens/History';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUserData, useUserDataDispatch, UserDataChange } from 'src/UserDataContext';
+import { ChevronLeft, Trash } from '@tamagui/lucide-icons';
 
 const TEXT_DEBOUNCE_MS = 1000;
 
@@ -19,9 +21,9 @@ const Workout: FC<WorkoutScreenProps> = ({ route, navigation }) => {
     useEffect(() => {
         if (isWorkoutEnd && data.draft) {
             dispatch({type: UserDataChange.SAVE_WORKOUT_DRAFT})
-            navigation.setParams({workoutId: data.draft.id})
+            navigation.setParams({workoutId: data.draft.id, isWorkoutEnd: true})
         }
-    }, []);
+    }, [isWorkoutEnd]);
 
     const saveNameValue = (name: string) => {
         dispatch({type: UserDataChange.UPDATE_WORKOUT_NAME, workoutId, name});
@@ -33,7 +35,11 @@ const Workout: FC<WorkoutScreenProps> = ({ route, navigation }) => {
     if (!workout) {
         if (isWorkoutEnd) {
             console.log('didn\'t find workout', workoutId);
-            return (<Text>Wait!</Text>)
+            return (
+                <YStack fullscreen={true}>
+                    <Spinner size="large" color="$green10" />
+                </YStack>
+            )
         }
         console.log("No workout found");
         navigation.navigate("Home");
@@ -61,10 +67,18 @@ const Workout: FC<WorkoutScreenProps> = ({ route, navigation }) => {
             </YStack>
         )
     }
+    const range = getWorkoutRange(workout)
     return (
-        <YStack>
-            {newWorkoutJSX}
+        <View>
+            <XStack justifyContent="space-between">
+                <Button icon={ChevronLeft} onPress={() => navigation.navigate('WorkoutList')}/>
+                <H5 alignSelf="center">View workout</H5>
+                <Button icon={Trash} />
+            </XStack>
+            <H4 marginTop="$2" marginHorizontal="$4">{workout.name}</H4>
+            <H6 fontStyle="italic"  marginBottom="$3" marginHorizontal="$4">Workout from {range.start.format('L')} to {range.end.format('L')}</H6>
             <YStack>
+                {newWorkoutJSX}
                 {workout ?
                     <FlatList data={workout.exercises}
                         renderItem={({ item }) => {
@@ -78,7 +92,7 @@ const Workout: FC<WorkoutScreenProps> = ({ route, navigation }) => {
                         }} />
                     : <Text>Could not find workout!</Text>}
             </YStack>
-        </YStack>
+        </View>
     );
 }
 

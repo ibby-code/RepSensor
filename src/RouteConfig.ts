@@ -1,21 +1,23 @@
-import { NativeStackScreenProps, createNativeStackNavigator } from '@react-navigation/native-stack';
+import { BottomTabScreenProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+import { NavigatorScreenParams } from '@react-navigation/native';
+
+import type { HistoryStackParamList } from './screens/History/History';
 
 type RootStackParamList = {
   Home: undefined;
-  Workout: { workoutId: string; isWorkoutEnd?: boolean };
-  ExerciseList: {workoutId?: string};
+  ExerciseList: { workoutId?: string };
+  History: NavigatorScreenParams<HistoryStackParamList>;
 }
 
 /** Root navigation stack for the app. */
-export const RootNavigatorStack = createNativeStackNavigator<RootStackParamList>();
+export const RootNavigatorStack = createBottomTabNavigator<RootStackParamList>();
 
 /** Properties for the Home screen */
-export type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
-
-
-/** Properties for the Workout screen */
-export type WorkoutScreenProps = NativeStackScreenProps<RootStackParamList, 'Workout'>;
+export type HomeScreenProps = BottomTabScreenProps<RootStackParamList, 'Home'>;
 
 /** Properties for the ExerciseList screen */
-export type ExerciseListScreenProps = NativeStackScreenProps<RootStackParamList, 'ExerciseList'>;
+export type ExerciseListScreenProps = BottomTabScreenProps<RootStackParamList, 'ExerciseList'>;
 
+/** Properties for the Histoy screen */
+export type HistoryScreenProps = BottomTabScreenProps<RootStackParamList, 'History'>;

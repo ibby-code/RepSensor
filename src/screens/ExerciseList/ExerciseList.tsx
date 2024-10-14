@@ -7,6 +7,7 @@ import { TabView } from 'react-native-tab-view';
 import { useUserData, useUserDataDispatch, UserDataChange, UserDataAction } from 'src/UserDataContext';
 import { Exercise, EXERCISE_TYPE_MAP } from 'src/WorkoutTypes';
 import ExerciseEditor from 'src/components/ExerciseEditor/ExerciseEditor';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 type ExerciseTab = {
@@ -44,9 +45,9 @@ const ExerciseList: FC<ExerciseListScreenProps> = ({ route, navigation }) => {
     // Wait for the draft to be created.
     if (!workoutId && !data.draft) {
         return (
-            <YStack fullscreen={true}>
+            <SafeAreaView style={{ flex: 1 }}>
                 <Spinner size="large" color="$green10" />
-            </YStack>
+            </SafeAreaView>
         )
     }
 
@@ -68,7 +69,7 @@ const ExerciseList: FC<ExerciseListScreenProps> = ({ route, navigation }) => {
     if (isDirtyForm) {
         endButtonHTML =
             <Button flex={1}
-                onPress={() => navigation.navigate('Workout', { workoutId: workoutId || '', isWorkoutEnd: true })}>
+                onPress={() => navigation.navigate('History', { screen: 'Workout', params: {workoutId: workoutId || '', isWorkoutEnd: true }})}>
                 End
             </Button>
     } else {
@@ -78,7 +79,7 @@ const ExerciseList: FC<ExerciseListScreenProps> = ({ route, navigation }) => {
             </Button>
     }
     return (
-        <>
+        <SafeAreaView style={{ flex: 1 }}>
             <TabView
                 navigationState={{ index, routes }}
                 renderScene={renderScene}
@@ -95,7 +96,7 @@ const ExerciseList: FC<ExerciseListScreenProps> = ({ route, navigation }) => {
                     New exercise
                 </Button>
             </XStack>
-        </>
+        </SafeAreaView>
     );
 };
 
