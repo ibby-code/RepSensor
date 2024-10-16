@@ -60,7 +60,6 @@ const ExerciseList: FC<ExerciseListScreenProps> = ({ route, navigation }) => {
             key: exercise.id,
             exercise
         }));
-    console.log("routes", routes);
     const renderScene = ({ route }: { route: ExerciseTab }) =>
         <View style={{ flex: 1 }}>
             <ExerciseEditor exercise={route.exercise} onSave={(exercise: Exercise) => {

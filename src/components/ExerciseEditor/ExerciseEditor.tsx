@@ -159,18 +159,18 @@ const ExerciseEditor: FC<ExerciseEditorProps> = ({ exercise, onSave }) => {
             {buttonHTML}
             <YStack theme="alt1" alignItems="center" marginBottom="$3">
                 <XStack marginBottom="$2">
-                    <Label htmlFor="weight" width={INPUT_LABEL_WIDTH_PX}>Weight</Label>
+                    <Label htmlFor={getInputId(exercise.id, "weight")} width={INPUT_LABEL_WIDTH_PX}>Weight</Label>
                     <IncrementNumberInput
-                        id="weight"
+                        id={getInputId(exercise.id, "weight")}
                         label="Enter a weight"
                         value={sets[sets.length - 1].weight}
                         onChange={(weight: number) => updateRecentSet((set) => set.weight = weight)}
                         delta={5} />
                 </XStack>
                 <XStack>
-                    <Label htmlFor="reps" width={INPUT_LABEL_WIDTH_PX}>Reps</Label>
+                    <Label htmlFor={getInputId(exercise.id, "reps")} width={INPUT_LABEL_WIDTH_PX}>Reps</Label>
                     <IncrementNumberInput
-                        id="reps"
+                        id={getInputId(exercise.id, "reps")}
                         label="Enter # of reps"
                         value={sets[sets.length - 1].actualReps}
                         onChange={(reps: number) => updateRecentSet((set) => set.actualReps = reps)}
@@ -188,6 +188,10 @@ const ExerciseEditor: FC<ExerciseEditorProps> = ({ exercise, onSave }) => {
         </>
 
     );
+}
+
+function getInputId(exerciseId: string, inputName: string) {
+    return `${exerciseId}:${inputName}`;
 }
 
 function getRepTitle(reps: number, weight: number): string {
