@@ -1,14 +1,16 @@
 import React, { FC, useEffect, useState } from 'react';
 
-import { Button, Spinner, Text, XStack, YStack } from 'tamagui'
+import { Button, Group, XGroup, Separator, Spinner, Text, XStack, YStack, useTheme } from 'tamagui'
 import { ExerciseListScreenProps } from 'src/RouteConfig';
 import { Alert, View, useWindowDimensions } from 'react-native';
-import { TabView } from 'react-native-tab-view';
+import { TabBar, TabView } from 'react-native-tab-view';
+import { StopCircle, ArrowRightCircle} from '@tamagui/lucide-icons';
 import { useUserData, useUserDataDispatch, UserDataChange, UserDataAction } from 'src/UserDataContext';
 import { Exercise, EXERCISE_TYPE_MAP } from 'src/WorkoutTypes';
 import ExerciseEditor from 'src/components/ExerciseEditor/ExerciseEditor';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+const NEW_EXERCISE_ID = "new";
 
 type ExerciseTab = {
     exercise: Exercise;
@@ -18,6 +20,7 @@ type ExerciseTab = {
 
 const ExerciseList: FC<ExerciseListScreenProps> = ({ route, navigation }) => {
     const layout = useWindowDimensions();
+    const theme = useTheme();
     const { workoutId } = route.params;
     const data = useUserData();
     const dispatch = useUserDataDispatch();
@@ -27,7 +30,7 @@ const ExerciseList: FC<ExerciseListScreenProps> = ({ route, navigation }) => {
     const [index, setIndex] = useState(0);
 
     useEffect(() => {
-        if (!data.draft && workoutId == "new") {
+        if (!data.draft && workoutId == NEW_EXERCISE_ID) {
             dispatch({ type: UserDataChange.CREATE_WORKOUT_DRAFT });
         }
         const unsubscribe = navigation.addListener('beforeRemove', (e) => {
@@ -43,7 +46,7 @@ const ExerciseList: FC<ExerciseListScreenProps> = ({ route, navigation }) => {
 
 
     // Wait for the draft to be created.
-    if (!workoutId && !data.draft) {
+    if (workoutId == NEW_EXERCISE_ID && !data.draft) {
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <Spinner size="large" color="$green10" />
@@ -68,33 +71,44 @@ const ExerciseList: FC<ExerciseListScreenProps> = ({ route, navigation }) => {
     let endButtonHTML;
     if (isDirtyForm) {
         endButtonHTML =
-            <Button flex={1}
-                onPress={() => navigation.navigate('History', { screen: 'Workout', params: {workoutId: workoutId || '', isWorkoutEnd: true }})}>
-                End
-            </Button>
-    } else {
-        endButtonHTML =
-            <Button flex={1} onPress={() => navigation.navigate("Home")}>
-                Exit
-            </Button>
+            <Group.Item>
+                <Button
+                    icon={StopCircle}
+                    onPress={() => navigation.navigate('History', { screen: 'Workout', params: {workoutId: workoutId || '', isWorkoutEnd: true }})}>
+                    Save and end
+                </Button>
+            </Group.Item>
     }
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <TabView
                 navigationState={{ index, routes }}
+                renderTabBar={(props) => (
+                    <TabBar 
+                        {...props}
+                        style={{backgroundColor: theme.blue3Dark.val}}
+                        scrollEnabled={true}
+                        indicatorStyle={{backgroundColor: theme.orange10Light.val}}
+                    />
+                )}
                 renderScene={renderScene}
                 onIndexChange={setIndex}
                 initialLayout={{ width: layout.width }}
             />
-            <XStack alignSelf="flex-end">
-                {endButtonHTML}
-                <Button flex={3}
-                    onPress={() => {
-                        dispatch({ type: UserDataChange.CREATE_EXERCISE_DRAFT });
-                        setDirtyForm(true);
-                    }}>
-                    New exercise
-                </Button>
+            <XStack justifyContent="center">
+                <XGroup marginVertical="$5">
+                    {endButtonHTML}
+                    <Group.Item>
+                        <Button
+                            icon={ArrowRightCircle}
+                            onPress={() => {
+                                dispatch({ type: UserDataChange.CREATE_EXERCISE_DRAFT });
+                                setDirtyForm(true);
+                            }}>
+                            Next exercise
+                        </Button>
+                    </Group.Item>
+                </XGroup>
             </XStack>
         </SafeAreaView>
     );

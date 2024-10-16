@@ -8,6 +8,8 @@ interface UserData {
   workouts: WorkoutMap;
 }
 
+const INITIAL_STATE: UserData = { workouts: {} };
+
 export enum UserDataChange {
   LOAD_WORKOUTS = "LOAD_WORKOUTS",
   CREATE_WORKOUT_DRAFT = "CREATE_WORKOUT_DRAFT",
@@ -18,7 +20,7 @@ export enum UserDataChange {
 }
 
 export type UserDataAction =
-  | { type: UserDataChange.LOAD_WORKOUTS, workouts: Workout[] }
+  | { type: UserDataChange.LOAD_WORKOUTS, workouts: WorkoutMap }
   | { type: UserDataChange.CREATE_WORKOUT_DRAFT }
   | { type: UserDataChange.CREATE_EXERCISE_DRAFT }
   | { type: UserDataChange.UPDATE_EXERCISE_DRAFT, exercise: Exercise }
@@ -29,7 +31,7 @@ export const UserDataContext = createContext<UserData>({ workouts: {} });
 export const UserDataDispatchContext = createContext<Dispatch<UserDataAction> | null>(null);
 
 export function UserDataProvider({ children }: { children: React.ReactNode }) {
-  const [workoutData, dispatch] = useReducer(userDataReducer, { workouts: [] });
+  const [workoutData, dispatch] = useReducer(userDataReducer, INITIAL_STATE);
   useEffect(() => {
     dispatch({ type: UserDataChange.LOAD_WORKOUTS, workouts: { ...FAKE_DATA.workouts } });
   }, []);
@@ -55,7 +57,7 @@ export function useUserDataDispatch(): Dispatch<UserDataAction> {
   return context;
 }
 
-function userDataReducer(state: UserData, action: UserDataAction) {
+function userDataReducer(state: UserData, action: UserDataAction): UserData {
   console.log('action', JSON.stringify(action));
   let work;
   switch (action.type) {
@@ -80,7 +82,9 @@ function userDataReducer(state: UserData, action: UserDataAction) {
       if (!state.draft || !state.draft.id || !isDraftDirty(state.draft)) return state;
       state.draft.name = generateWorkoutName(state.draft);
       console.log('draft', JSON.stringify(state.draft));
-      return { ...state, workouts: { ...state.workouts, [state.draft.id]: validateFullWorkout(state.draft) }, draft: undefined };
+      const validDraft = validateFullWorkout(state.draft)
+      if (!validDraft) return state;
+      return { ...state, workouts: { ...state.workouts, [state.draft.id]: validDraft}, draft: undefined };
     case UserDataChange.UPDATE_WORKOUT_NAME:
       work = state.workouts[action.workoutId];
       if (!work) return state;

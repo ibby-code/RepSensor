@@ -1,4 +1,4 @@
-import { TamaguiProvider } from 'tamagui';
+import { TamaguiProvider, Theme} from 'tamagui';
 import { NavigationContainer, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import tamaguiConfig from './tamagui.config'
 import { Home as HomeIcon, Dumbbell, CalendarCheck } from 'lucide-react-native';
@@ -21,42 +21,47 @@ export default function App() {
     InterBold: Inter_700Bold,
   })
   if (!loaded) return null
-  // set options for screen here controlling title bar
-  // figure out what we weannt do with it and back button
-  // consider using bottom tabs navigator instead?
+  const getIconColor = (focused: boolean, defaultColor: string): string => {
+    // TODO: use theme color here
+    // cannot use useTheme since we declare theme provider here, the context is not set yet
+    // one option is to make a providers wrapper that has all providers
+    return focused ? "darkblue" : defaultColor;
+  }
   return (
     <TamaguiProvider config={tamaguiConfig}>
         <UserDataProvider>
-          <NavigationContainer>
-            <RootNavigatorStack.Navigator initialRouteName="Home"
-                screenOptions={headerOptions}>
-              <RootNavigatorStack.Screen
-                name="Home"
-                component={Home}
-                options={{
-                  title: '',
-                  tabBarIcon: ({color, size}) => <HomeIcon size={size} color={color} />
-                }}
-              />
-              <RootNavigatorStack.Screen
-                name="ExerciseList"
-                component={ExerciseList}
-                initialParams={{workoutId: 'new'}}
-                options={{
-                  title: '',
-                  tabBarIcon: ({color, size}) => <Dumbbell size={size} color={color} />
-                }}
-              />
-              <RootNavigatorStack.Screen
-                name="History"
-                component={History}
-                options={{
-                  title: '',
-                  tabBarIcon: ({color, size}) => <CalendarCheck size={size} color={color} />
-                }}
-              />
-            </RootNavigatorStack.Navigator>
-          </NavigationContainer>
+          <Theme name="dark_blue">
+            <NavigationContainer>
+              <RootNavigatorStack.Navigator initialRouteName="Home"
+                  screenOptions={headerOptions}>
+                <RootNavigatorStack.Screen
+                  name="Home"
+                  component={Home}
+                  options={{
+                    title: '',
+                    tabBarIcon: ({color, size, focused}) => <HomeIcon size={size} color={getIconColor(focused, color)} />
+                  }}
+                />
+                <RootNavigatorStack.Screen
+                  name="ExerciseList"
+                  component={ExerciseList}
+                  initialParams={{workoutId: 'new'}}
+                  options={{
+                    title: '',
+                    tabBarIcon: ({color, size, focused}) => <Dumbbell size={size} color={getIconColor(focused, color)} />
+                  }}
+                />
+                <RootNavigatorStack.Screen
+                  name="History"
+                  component={History}
+                  options={{
+                    title: '',
+                    tabBarIcon: ({color, size, focused}) => <CalendarCheck size={size} color={getIconColor(focused, color)} />,
+                  }}
+                />
+              </RootNavigatorStack.Navigator>
+            </NavigationContainer>
+          </Theme>
         </UserDataProvider>
     </TamaguiProvider>
   );

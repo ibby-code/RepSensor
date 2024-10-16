@@ -1,8 +1,9 @@
 import React, { FC, useState } from 'react';
-import { Button, Input, XStack } from 'tamagui';
+import { Button, Input, XGroup} from 'tamagui';
 
 
 interface IncrementNumberInputProps {
+  id?: string;
   label: string;
   value?: number;
   delta: number;
@@ -17,7 +18,7 @@ interface IncrementNumberInputProps {
  * Example drawing: <-> [Enter a value] <+>
  */
 const IncrementNumberInput: FC<IncrementNumberInputProps> =
-  ({ label, value = "", delta, onChange, disableFloats = false }) => {
+  ({ id = "", label, value = "", delta, onChange, disableFloats = false }) => {
     const [valueStr, setValueStr] = useState(value.toString())
     const setValueNum = (val: string, change: number) => {
       if (!val) val = '0';
@@ -31,16 +32,17 @@ const IncrementNumberInput: FC<IncrementNumberInputProps> =
       }
     }
     return (
-      <XStack>
+      <XGroup>
         <Button onPress={() => setValueNum(valueStr, -delta)}>-</Button>
         <Input
+          id={id}
           placeholder={label}
           onChangeText={(text) => setValueStr(text)}
           onBlur={() => setValueNum(valueStr, 0)}
           keyboardType="numeric"
           value={valueStr} />
         <Button onPress={() => setValueNum(valueStr, delta)}>+</Button>
-      </XStack>
+      </XGroup>
     )
   };
 

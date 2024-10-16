@@ -2,8 +2,8 @@ import moment from 'moment'
 import React, { FC, useState } from 'react';
 
 import { FlatList } from 'react-native';
-import { Check, ChevronDown, ChevronUp } from '@tamagui/lucide-icons'
-import { Adapt, Button, ListItem, Select, Sheet, XStack, YStack } from 'tamagui';
+import { Check, ChevronDown, ChevronUp, PlayCircle, PauseCircle } from '@tamagui/lucide-icons'
+import { Adapt, Button, Label, ListItem, Select, Sheet, XStack, YStack, styled } from 'tamagui';
 import { LinearGradient } from 'tamagui/linear-gradient'
 import { EXERCISE_TYPE_MAP, Exercise, ExerciseType, RepSet } from 'src/WorkoutTypes';
 
@@ -15,6 +15,9 @@ interface ExerciseEditorProps {
 }
 
 const EMPTY_SET: RepSet = { actualReps: 0, endTimeMs: 0, startTimeMs: 0, weight: 0 };
+const INPUT_LABEL_WIDTH_PX = 56;
+
+const CenterButton = styled(Button, {alignSelf: "center", marginVertical: "$6"})
 
 const ExerciseEditor: FC<ExerciseEditorProps> = ({ exercise, onSave }) => {
     const [exerciseType, setExerciseType] = useState<ExerciseType>(exercise.type);
@@ -39,10 +42,10 @@ const ExerciseEditor: FC<ExerciseEditorProps> = ({ exercise, onSave }) => {
     let buttonHTML;
     if (!sets.length || !sets[sets.length - 1].startTimeMs) {
         const startTimeUpdater = (set: RepSet) => set.startTimeMs = moment().unix();
-        buttonHTML = <Button onPress={() => updateRecentSet(startTimeUpdater)}>Start</Button>
+        buttonHTML = <CenterButton icon={PlayCircle} onPress={() => updateRecentSet(startTimeUpdater)}>Start</CenterButton>
     } else if (!sets[sets.length - 1].endTimeMs) {
         const endTimeUpdater = (set: RepSet) => set.endTimeMs = moment().unix();
-        buttonHTML = <Button onPress={() => updateRecentSet(endTimeUpdater, true)}>End</Button>
+        buttonHTML = <CenterButton icon={PauseCircle} onPress={() => updateRecentSet(endTimeUpdater, true)}>End</CenterButton>
     } else {
         const lastSet = sets.length ? sets[sets.length - 1] : EMPTY_SET;
         const saveAndCreateNew = () => {
@@ -50,13 +53,13 @@ const ExerciseEditor: FC<ExerciseEditorProps> = ({ exercise, onSave }) => {
             const newSet = { ...EMPTY_SET, startTimeMs: moment().unix(), weight: lastSet.weight, actualReps: lastSet.actualReps };
             setSets([...sets, newSet]);
         }
-        buttonHTML = <Button onPress={() => saveAndCreateNew()}>Next</Button>
+        buttonHTML = <CenterButton icon={PlayCircle} onPress={() => saveAndCreateNew()}>Next</CenterButton>
     }
  
     return ( 
         <>
             <Select value={exerciseType != ExerciseType.UNSET ? exerciseType.toString() : undefined} onValueChange={(val) => setExerciseType(val as ExerciseType)}>
-                <Select.Trigger width={220} iconAfter={ChevronDown}>
+                <Select.Trigger alignSelf="center" marginVertical="$3" width={220} iconAfter={ChevronDown}>
                     <Select.Value placeholder="Select a movement" />
                 </Select.Trigger>
                 <Adapt when="sm" platform="touch">
@@ -153,22 +156,28 @@ const ExerciseEditor: FC<ExerciseEditorProps> = ({ exercise, onSave }) => {
                     </Select.ScrollDownButton>
                 </Select.Content>
             </Select>
-            <XStack>
-                {buttonHTML}
-                <YStack>
+            {buttonHTML}
+            <YStack theme="alt1" alignItems="center" marginBottom="$3">
+                <XStack marginBottom="$2">
+                    <Label htmlFor="weight" width={INPUT_LABEL_WIDTH_PX}>Weight</Label>
                     <IncrementNumberInput
+                        id="weight"
                         label="Enter a weight"
                         value={sets[sets.length - 1].weight}
                         onChange={(weight: number) => updateRecentSet((set) => set.weight = weight)}
                         delta={5} />
+                </XStack>
+                <XStack>
+                    <Label htmlFor="reps" width={INPUT_LABEL_WIDTH_PX}>Reps</Label>
                     <IncrementNumberInput
+                        id="reps"
                         label="Enter # of reps"
                         value={sets[sets.length - 1].actualReps}
                         onChange={(reps: number) => updateRecentSet((set) => set.actualReps = reps)}
                         delta={1}
                         disableFloats={true} />
-                </YStack>
-            </XStack>
+                </XStack>
+            </YStack>
             <FlatList data={sets.filter((val) => Boolean(val.endTimeMs))}
                 renderItem={({ item }) => (
                     <ListItem bordered
